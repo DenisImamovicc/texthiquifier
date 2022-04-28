@@ -1,33 +1,27 @@
-import express from "express"
-import fetch from 'node-fetch';
-import cors from "cors"
+let http = require('http');
+let formidable = require('formidable');
+let fs = require('fs');
 
-const flickrapikey = "904552878bd72bf5143028f71ca3411e"
-const allowedserver="http://127.0.0.1:8080"
-const api = express();
-const port = 5000;
-const flickrapi = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${flickrapikey}&text=Star+wars&extras=url_m&per_page=20&format=json&nojsoncallback=1`
-
-//Fetches none specified json data from flickrapi with the flickrapi and returns data,if res is status 200, in json form of photo array containing x amount of picture/s.
-function getExternaldata(req,res) {
-    fetch(flickrapi)
-    .then(res => res.json())
-    .then(rawData => {
-        const filteredData = res.status(200).send(rawData.photos.photo)
-        return filteredData
-    });
-}
-
-//.use() method allows a server,allowedserver,to fetch data from this API without our beloved cors being in the way :).
-api.use(cors({
-    origin:allowedserver
-}))
-
-api.listen(port, () =>
-    console.log(port, `Api live at http://localhost:${port}`)
-)
-
-//Creates /PHOTOS API route and responds to requests made by allowed servers by calling getExternaldata() function.
-api.get("/PHOTOS", (req,res) => {
-    getExternaldata(req,res)
-})
+http.createServer(function (req, res) {
+  if (req.url == '/fileupload') {
+    let form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      let oldpath = files.filetoupload.filepath;
+      let newpath = 'C:/Users/Denis/Desktop/Visual studio/Arbetsprov/Hiq-takeawaytest/files/' + files.filetoupload.originalFilename;
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.write('File uploaded and moved!');
+        res.end();
+      });
+ });
+  } else {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
+    res.write('<input type="file" name="filetoupload"><br>');
+    res.write('<input type="submit">');
+    res.write('</form>');
+    return res.end();
+  }
+}).listen(8080, () =>
+console.log(8080, `Api live at http://localhost:${8080}`)
+);

@@ -3,22 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="inde.js" async></script>
+    <script src="index.js" async></script>
     <title>foobarify</title>
 </head>
 
 <body>
     <div id="container">
-            <form method="post" action="api.js" id="form">
-                <div id="input">
-                    <label for="textdata">Enter file:</label>
-                    <input type="file" name="textdata" id="textdata" required>
-                <input type="submit" name="submit" >
-              </form>
-        </div>
+        <h1>Upload files to Node.js Server</h1>
+        <form action="fileupload" method="post" enctype="multipart/form-data">
+            <input type="file" name="filetoupload">
+            <input type="submit" value="Upload">
+        </form>
+        </form>
     </div>
 </body>
 
